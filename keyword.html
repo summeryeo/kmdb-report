@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KMDb 네이버 검색 키워드 · 2026.05.08</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:    #111827;
+    --ink-2:  #374151;
+    --ink-3:  #6B7280;
+    --ink-4:  #9CA3AF;
+    --paper:  #FFFFFF;
+    --rule:   #E5E7EB;
+    --c1:     #1D4ED8;
+    --c2:     #0891B2;
+    --c3:     #0F766E;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Noto Sans KR', sans-serif;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    padding: 48px 40px 56px;
+    max-width: 840px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .header {
+    border-top: 2px solid var(--ink);
+    padding-top: 18px;
+    margin-bottom: 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 7px;
+  }
+  .title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .subtitle {
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-top: 5px;
+    font-weight: 300;
+  }
+  .date-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.06em;
+    padding-bottom: 2px;
+    white-space: nowrap;
+  }
+
+  /* ── 키워드 리스트 ── */
+  .kw-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 0;
+  }
+
+  .kw-row {
+    display: grid;
+    grid-template-columns: 44px 1fr 90px;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--rule);
+    gap: 0;
+    position: relative;
+    transition: background 0.12s;
+  }
+  .kw-row:last-child { border-bottom: none; }
+  .kw-row:hover { background: #F9FAFB; }
+
+  /* 강조 행 */
+  .kw-row.highlight-1 {
+    background: #EFF4FF;
+    border-left: 3px solid var(--c1);
+  }
+  .kw-row.highlight-ott {
+    background: #F0FDFA;
+    border-left: 3px solid var(--c3);
+  }
+  .kw-row.highlight-steady {
+    background: #ECFEFF;
+    border-left: 3px solid var(--c2);
+  }
+
+  .rank {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink-4);
+  }
+  .rank.r1 { color: var(--c1); font-size: 15px; }
+  .rank.r5, .rank.r9 { color: var(--c2); }
+  .rank.r10 { color: var(--c3); }
+
+  .kw-info { display: flex; flex-direction: column; gap: 3px; }
+  .kw-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .kw-name.r1 { font-size: 15px; color: var(--c1); }
+  .kw-name.ott { color: var(--c3); }
+  .kw-name.steady { color: var(--c2); }
+
+  .kw-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 3px;
+    width: fit-content;
+    margin-top: 1px;
+  }
+  .tag-top    { background: #DBEAFE; color: #1E3A8A; }
+  .tag-steady { background: #CFFAFE; color: #164E63; }
+  .tag-ott    { background: #CCFBF1; color: #134E4A; }
+
+  /* 클릭 바 */
+  .click-bar-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+  }
+  .click-val {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-2);
+    font-weight: 500;
+  }
+  .click-val.r1 { color: var(--c1); font-size: 13px; font-weight: 700; }
+  .click-val.ott { color: var(--c3); }
+  .click-val.steady { color: var(--c2); }
+
+  .mini-bar {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--rule);
+    width: 72px;
+    overflow: hidden;
+  }
+  .mini-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+  }
+
+
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 36px;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (max-width: 560px) {
+    body { padding: 28px 18px 48px; }
+    .kw-row { grid-template-columns: 36px 1fr 72px; padding: 12px 14px; }
+    .title { font-size: 18px; }
+    .mini-bar { width: 52px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div>
+    <p class="eyebrow">KMDb · Naver Search Advisor</p>
+    <h1 class="title">오늘의 KMDb 검색 키워드</h1>
+    <p class="subtitle">네이버 유입 키워드 TOP 10 · PC + Mobile</p>
+  </div>
+  <p class="date-badge">2026.05.08 어버이날</p>
+</header>
+
+<div class="kw-list" id="kwList"></div>
+
+
+
+<footer class="footer">
+  <span>Source: Naver Search Advisor · kmdb.or.kr</span>
+  <span>최근 30일 기준 · 2026.05.08</span>
+</footer>
+
+<script>
+const maxClick = 9447;
+
+const data = [
+  { rank:1,  name:'살목지',            click:9447,  type:'top',    tag:'tagTop',    tagLabel:'1위 · 현재상영' },
+  { rank:2,  name:'더콜',              click:3864,  type:'normal', tag:'',          tagLabel:'' },
+  { rank:3,  name:'정우',              click:3120,  type:'normal', tag:'',          tagLabel:'' },
+  { rank:4,  name:'kmdb',             click:3022,  type:'normal', tag:'',          tagLabel:'' },
+  { rank:5,  name:'왕과 사는 남자',     click:2720,  type:'steady', tag:'tagSteady', tagLabel:'꾸준한 상위권' },
+  { rank:6,  name:'민도윤',            click:2253,  type:'normal', tag:'',          tagLabel:'' },
+  { rank:7,  name:'고수',              click:1982,  type:'normal', tag:'',          tagLabel:'' },
+  { rank:8,  name:'영화 살목지 정보',   click:1721,  type:'top',    tag:'tagTop',    tagLabel:'살목지 연관' },
+  { rank:9,  name:'왕과 사는 남자 정보',click:1664,  type:'steady', tag:'tagSteady', tagLabel:'꾸준한 상위권' },
+  { rank:10, name:'구룡성채',          click:1546,  type:'ott',    tag:'tagOtt',    tagLabel:'OTT 신작 효과' },
+];
+
+const tagMap = {
+  tagTop:    { cls:'tag-top',    label: null },
+  tagSteady: { cls:'tag-steady', label: null },
+  tagOtt:    { cls:'tag-ott',    label: null },
+};
+
+function rankClass(r, type) {
+  if (r===1) return 'r1';
+  if (type==='steady') return 'steady';
+  if (type==='ott') return 'ott';
+  return '';
+}
+
+function rowClass(type) {
+  if (type==='top' && data.find(d=>d.type==='top' && d.rank===1)) {
+    // rank 1 only
+  }
+  return '';
+}
+
+const list = document.getElementById('kwList');
+data.forEach(d => {
+  const rc = rankClass(d.rank, d.type);
+  const hlClass =
+    d.rank === 1       ? 'highlight-1' :
+    d.type === 'ott'   ? 'highlight-ott' :
+    d.type === 'steady' && (d.rank===5||d.rank===9) ? 'highlight-steady' :
+    d.type === 'top'   ? 'highlight-1' : '';
+
+  const tagInfo = d.tag ? tagMap[d.tag] : null;
+  const tagHTML = tagInfo
+    ? `<span class="kw-tag ${tagInfo.cls}">${d.tagLabel}</span>`
+    : '';
+
+  const pct = (d.click / maxClick * 100).toFixed(1);
+  const barColor =
+    d.rank===1         ? '#1D4ED8' :
+    d.type==='steady'  ? '#0891B2' :
+    d.type==='ott'     ? '#0F766E' :
+    '#BFDBFE';
+
+  list.innerHTML += `
+    <div class="kw-row ${hlClass}">
+      <span class="rank ${rc}">${String(d.rank).padStart(2,'0')}</span>
+      <div class="kw-info">
+        <span class="kw-name ${rc}">${d.name}</span>
+        ${tagHTML}
+      </div>
+      <div class="click-bar-wrap">
+        <span class="click-val ${rc}">${d.click.toLocaleString()}</span>
+        <div class="mini-bar">
+          <div class="mini-bar-fill" style="width:${pct}%; background:${barColor};"></div>
+        </div>
+      </div>
+    </div>`;
+});
+</script>
+</body>
+</html>
