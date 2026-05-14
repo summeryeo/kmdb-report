@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KMDb 구술 컬렉션 · 생애사 vs 주제사</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #FAFAF9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px;
+  }
+  svg { max-width: 840px; width: 100%; }
+  text { font-family: 'Noto Sans KR', sans-serif; }
+  .mono { font-family: 'DM Mono', monospace; }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 680 430" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- 배경 분할선 -->
+  <line x1="340" y1="30" x2="340" y2="390" stroke="#D1D5DB" stroke-width="0.5" stroke-dasharray="4 4"/>
+
+  <!-- ── 생애사 ── -->
+  <text font-size="11" fill="#6B7280" x="170" y="52" text-anchor="middle" font-family="'DM Mono', monospace" letter-spacing="0.08em">생애사</text>
+  <text font-size="14" font-weight="700" fill="#111827" x="170" y="74" text-anchor="middle">한 사람의 전 생애</text>
+
+  <circle cx="170" cy="116" r="20" fill="#1D4ED8" fill-opacity="0.10" stroke="#1D4ED8" stroke-width="1"/>
+  <text font-size="12" fill="#1D4ED8" x="170" y="121" text-anchor="middle">인물</text>
+
+  <line x1="170" y1="136" x2="170" y2="335" stroke="#1D4ED8" stroke-width="2.5" marker-end="url(#arr)" stroke-linecap="round"/>
+
+  <circle cx="170" cy="174" r="5" fill="#1D4ED8" fill-opacity="0.35"/>
+  <text font-size="12" fill="#6B7280" x="200" y="178">입문기</text>
+
+  <circle cx="170" cy="224" r="5" fill="#1D4ED8" fill-opacity="0.60"/>
+  <text font-size="12" fill="#6B7280" x="200" y="228">전성기</text>
+
+  <circle cx="170" cy="274" r="5" fill="#1D4ED8" fill-opacity="0.85"/>
+  <text font-size="12" fill="#6B7280" x="200" y="278">만년·회고</text>
+
+  <text font-size="11" fill="#1D4ED8" fill-opacity="0.65" x="170" y="362" text-anchor="middle">깊이 · 수직 · 한 목소리</text>
+
+  <!-- ── 주제사 ── -->
+  <text font-size="11" fill="#6B7280" x="510" y="52" text-anchor="middle" font-family="'DM Mono', monospace" letter-spacing="0.08em">주제사</text>
+  <text font-size="14" font-weight="700" fill="#111827" x="510" y="74" text-anchor="middle">한 시대의 단면</text>
+
+  <circle cx="510" cy="242" r="22" fill="#0F766E" fill-opacity="0.10" stroke="#0F766E" stroke-width="1"/>
+  <text font-size="12" fill="#0F766E" x="510" y="247" text-anchor="middle">주제</text>
+
+  <circle cx="408" cy="116" r="14" fill="#0F766E" fill-opacity="0.08" stroke="#0F766E" stroke-width="0.8"/>
+  <text font-size="12" fill="#0F766E" x="408" y="121" text-anchor="middle">A</text>
+  <line x1="408" y1="130" x2="491" y2="228" stroke="#0F766E" stroke-width="1.2" stroke-dasharray="4 3" stroke-opacity="0.55" marker-end="url(#arr)"/>
+
+  <circle cx="510" cy="106" r="14" fill="#0F766E" fill-opacity="0.08" stroke="#0F766E" stroke-width="0.8"/>
+  <text font-size="12" fill="#0F766E" x="510" y="111" text-anchor="middle">B</text>
+  <line x1="510" y1="120" x2="510" y2="218" stroke="#0F766E" stroke-width="1.8" stroke-opacity="0.70" marker-end="url(#arr)"/>
+
+  <circle cx="612" cy="116" r="14" fill="#0F766E" fill-opacity="0.08" stroke="#0F766E" stroke-width="0.8"/>
+  <text font-size="12" fill="#0F766E" x="612" y="121" text-anchor="middle">C</text>
+  <line x1="612" y1="130" x2="529" y2="228" stroke="#0F766E" stroke-width="1.2" stroke-dasharray="4 3" stroke-opacity="0.55" marker-end="url(#arr)"/>
+
+  <circle cx="440" cy="170" r="14" fill="#0F766E" fill-opacity="0.08" stroke="#0F766E" stroke-width="0.8"/>
+  <text font-size="12" fill="#0F766E" x="440" y="175" text-anchor="middle">D</text>
+  <line x1="440" y1="184" x2="491" y2="232" stroke="#0F766E" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="0.45" marker-end="url(#arr)"/>
+
+  <circle cx="578" cy="170" r="14" fill="#0F766E" fill-opacity="0.08" stroke="#0F766E" stroke-width="0.8"/>
+  <text font-size="12" fill="#0F766E" x="578" y="175" text-anchor="middle">E</text>
+  <line x1="578" y1="184" x2="529" y2="232" stroke="#0F766E" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="0.45" marker-end="url(#arr)"/>
+
+  <line x1="510" y1="264" x2="510" y2="335" stroke="#0F766E" stroke-width="1.5" stroke-opacity="0.35" marker-end="url(#arr)"/>
+  <text font-size="11" fill="#0F766E" fill-opacity="0.50" x="510" y="354" text-anchor="middle">집단 기억</text>
+  <text font-size="11" fill="#0F766E" fill-opacity="0.65" x="510" y="374" text-anchor="middle">넓이 · 수평 · 여러 목소리</text>
+
+  <text font-size="11" fill="#9CA3AF" x="340" y="412" text-anchor="middle" font-family="'DM Mono', monospace">KMDb 구술 컬렉션 · 한국영상자료원</text>
+</svg>
+</body>
+</html>
