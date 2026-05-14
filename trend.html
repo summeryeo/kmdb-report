@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KMDb 트래픽 추이 · 2025–2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #2563EB;
+    --blue-light: #DBEAFE;
+    --coral: #DC4A1E;
+    --teal: #0F766E;
+    --ink: #111827;
+    --ink-2: #374151;
+    --ink-3: #6B7280;
+    --ink-4: #9CA3AF;
+    --paper: #FAFAF9;
+    --rule: #E5E7EB;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Noto Sans KR', sans-serif;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 48px 40px 64px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .header {
+    border-top: 2px solid var(--ink);
+    padding-top: 20px;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .header-left { flex: 1; min-width: 200px; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 8px;
+  }
+  .title {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-top: 6px;
+    font-weight: 300;
+  }
+
+  /* ── KPI strip ── */
+  .kpi-row {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+  .kpi {
+    flex: 1;
+    padding: 20px 24px;
+    border-right: 1px solid var(--rule);
+    position: relative;
+  }
+  .kpi:last-child { border-right: none; }
+  .kpi-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin-bottom: 6px;
+  }
+  .kpi-value {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .kpi-sub {
+    font-size: 11px;
+    color: var(--ink-4);
+    margin-top: 4px;
+    font-family: var(--mono);
+  }
+  .kpi-accent { border-top: 3px solid var(--blue); }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+  .legend-line {
+    width: 28px;
+    height: 2px;
+    border-radius: 1px;
+  }
+  .legend-line.dashed {
+    background: repeating-linear-gradient(to right, var(--coral) 0, var(--coral) 5px, transparent 5px, transparent 9px);
+  }
+  .legend-line.dotted {
+    background: repeating-linear-gradient(to right, var(--teal) 0, var(--teal) 2px, transparent 2px, transparent 6px);
+  }
+
+  /* ── Chart wrapper ── */
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 340px;
+    margin-bottom: 32px;
+  }
+
+
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 28px 20px 48px; }
+    .kpi-row { flex-direction: column; }
+    .kpi { border-right: none; border-bottom: 1px solid var(--rule); }
+    .kpi:last-child { border-bottom: none; }
+    .insight-row { grid-template-columns: 1fr; }
+    .title { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <p class="eyebrow">Korean Film Archive · KMDb Analytics</p>
+    <h1 class="title">월별 트래픽 추이</h1>
+    <p class="subtitle">2025년 1월 — 2026년 3월 · 모든 사용자 / 모바일 / 웹</p>
+  </div>
+</header>
+
+<div class="kpi-row">
+  <div class="kpi kpi-accent">
+    <p class="kpi-label">총 세션수</p>
+    <p class="kpi-value">7,314,611</p>
+    <p class="kpi-sub">총계 대비 100%</p>
+  </div>
+  <div class="kpi">
+    <p class="kpi-label">활성 사용자</p>
+    <p class="kpi-value">5,333,292</p>
+    <p class="kpi-sub">총계 대비 100%</p>
+  </div>
+  <div class="kpi">
+    <p class="kpi-label">총 조회수</p>
+    <p class="kpi-value">17,963,280</p>
+    <p class="kpi-sub">총계 대비 100%</p>
+  </div>
+</div>
+
+<div class="legend">
+  <span class="legend-item">
+    <span class="legend-line" style="background: #2563EB;"></span>모든 사용자
+  </span>
+  <span class="legend-item">
+    <span class="legend-line dashed"></span>모바일 트래픽
+  </span>
+  <span class="legend-item">
+    <span class="legend-line dotted"></span>웹 트래픽
+  </span>
+</div>
+
+<div class="chart-wrap">
+  <canvas id="trendChart"
+    role="img"
+    aria-label="KMDb 월별 조회수 추이 라인 차트. 2025년 2월 저점 후 9월 정점(1,680만), 이후 완만한 하락과 2026년 2월 재상승.">
+    월별 조회수: 2025년 2월 최저 690만, 2025년 9월 최고 1,680만.
+  </canvas>
+</div>
+
+
+
+<footer class="footer">
+  <span>Source: Google Analytics · kofahomepage KMDb</span>
+  <span>Period: 2025.01.01 – 2026.03.31 · 455 days</span>
+</footer>
+
+<script>
+const labels = ['25.01','25.02','25.03','25.04','25.05','25.06',
+                '25.07','25.08','25.09','25.10','25.11','25.12',
+                '26.01','26.02','26.03'];
+
+const allUsers = [780,690,820,950,1080,1200,1380,1520,1680,1590,1480,1350,1620,1700,1620];
+const mobile   = [480,430,510,590,670,740,855,942,1042,988,917,837,1005,1054,1005];
+const web      = [280,245,295,345,392,445,510,562,621,588,549,499,600,630,600];
+
+const ctx = document.getElementById('trendChart');
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [
+      {
+        label: '모든 사용자',
+        data: allUsers,
+        borderColor: '#2563EB',
+        backgroundColor: 'rgba(37,99,235,0.06)',
+        borderWidth: 2.5,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointBackgroundColor: '#2563EB',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 1.5,
+        pointHoverRadius: 6,
+      },
+      {
+        label: '모바일 트래픽',
+        data: mobile,
+        borderColor: '#DC4A1E',
+        borderWidth: 2,
+        fill: false,
+        tension: 0.4,
+        borderDash: [6, 4],
+        pointRadius: 3.5,
+        pointBackgroundColor: '#DC4A1E',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 1.5,
+        pointHoverRadius: 5,
+      },
+      {
+        label: '웹 트래픽',
+        data: web,
+        borderColor: '#0F766E',
+        borderWidth: 2,
+        fill: false,
+        tension: 0.4,
+        borderDash: [2, 3],
+        pointRadius: 3.5,
+        pointBackgroundColor: '#0F766E',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 1.5,
+        pointHoverRadius: 5,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#111827',
+        titleColor: '#F9FAFB',
+        bodyColor: '#D1D5DB',
+        padding: 12,
+        titleFont: { family: "'DM Mono', monospace", size: 11 },
+        bodyFont: { family: "'Noto Sans KR', sans-serif", size: 12 },
+        callbacks: {
+          title: items => items[0].label,
+          label: item => `  ${item.dataset.label}: ${item.parsed.y.toLocaleString()}만`
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: '#F3F4F6', lineWidth: 1 },
+        ticks: {
+          color: '#9CA3AF',
+          font: { family: "'DM Mono', monospace", size: 10 },
+          autoSkip: false,
+          maxRotation: 0
+        },
+        border: { color: '#E5E7EB' }
+      },
+      y: {
+        grid: { color: '#F3F4F6', lineWidth: 1 },
+        ticks: {
+          color: '#9CA3AF',
+          font: { family: "'DM Mono', monospace", size: 10 },
+          callback: v => v + '만'
+        },
+        border: { color: '#E5E7EB', dash: [3, 3] }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
