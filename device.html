@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KMDb 기기별 비중 · 2025–2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --coral: #DC4A1E;
+    --coral-light: #FEE2D5;
+    --blue: #2563EB;
+    --blue-light: #DBEAFE;
+    --stone: #78716C;
+    --stone-light: #E7E5E4;
+    --teal: #0F766E;
+    --ink: #111827;
+    --ink-2: #374151;
+    --ink-3: #6B7280;
+    --ink-4: #9CA3AF;
+    --paper: #FAFAF9;
+    --rule: #E5E7EB;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Noto Sans KR', sans-serif;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 48px 40px 64px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .header {
+    border-top: 2px solid var(--ink);
+    padding-top: 20px;
+    margin-bottom: 40px;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 8px;
+  }
+  .title {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-top: 6px;
+    font-weight: 300;
+  }
+
+  /* ── Toggle ── */
+  .toggle-wrap {
+    display: flex;
+    gap: 0;
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+    width: fit-content;
+    margin-bottom: 36px;
+  }
+  .toggle-btn {
+    padding: 9px 20px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.18s;
+    border-right: 1px solid var(--rule);
+  }
+  .toggle-btn:last-child { border-right: none; }
+  .toggle-btn.active {
+    background: var(--ink);
+    color: white;
+  }
+
+  /* ── Main layout ── */
+  .viz-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 48px;
+    align-items: center;
+    margin-bottom: 48px;
+  }
+
+  .donut-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 280px;
+  }
+  .donut-canvas-wrap {
+    position: relative;
+    width: 100%;
+    height: 280px;
+  }
+  .donut-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+  }
+  .donut-center-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .donut-center-value {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    display: block;
+  }
+  .donut-center-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-4);
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* ── Device cards ── */
+  .device-cards { display: flex; flex-direction: column; gap: 16px; }
+  .device-card {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 20px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .device-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+  }
+  .device-card.mobile::before  { background: var(--coral); }
+  .device-card.desktop::before { background: var(--blue); }
+  .device-card.other::before   { background: var(--stone); }
+
+  .device-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+  .device-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .device-pct {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .device-pct.mobile  { color: var(--coral); }
+  .device-pct.desktop { color: var(--blue); }
+  .device-pct.other   { color: var(--stone); }
+
+  .device-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .device-metric-item { }
+  .device-metric-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin-bottom: 3px;
+  }
+  .device-metric-value {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+
+
+
+  .footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (max-width: 680px) {
+    body { padding: 28px 20px 48px; }
+    .viz-grid { grid-template-columns: 1fr; gap: 32px; }
+    .donut-wrap { max-width: 220px; margin: 0 auto; }
+    .donut-canvas-wrap { height: 220px; }
+    .insight-box { grid-template-columns: 1fr; }
+    .compare-row { grid-template-columns: 90px 1fr 60px; }
+    .title { font-size: 22px; }
+    .device-metrics { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <p class="eyebrow">Korean Film Archive · KMDb Analytics</p>
+  <h1 class="title">기기별 비중</h1>
+  <p class="subtitle">2025년 1월 — 2026년 3월 · 세션수 / 활성 사용자 / 조회수</p>
+</header>
+
+<div class="toggle-wrap">
+  <button class="toggle-btn active" onclick="switchMetric('session', this)">세션수</button>
+  <button class="toggle-btn" onclick="switchMetric('user', this)">활성 사용자</button>
+  <button class="toggle-btn" onclick="switchMetric('view', this)">조회수</button>
+</div>
+
+<div class="viz-grid">
+  <div class="donut-wrap">
+    <div class="donut-canvas-wrap">
+      <canvas id="donutChart"
+        role="img"
+        aria-label="기기별 비중 도넛 차트. 세션 기준 모바일 75.3%, 웹 23.3%, 기타 1.4%.">
+        모바일 75.3%, 웹 23.3%, 기타 1.4%.
+      </canvas>
+      <div class="donut-center" id="donutCenter">
+        <span class="donut-center-label" id="centerLabel">세션 기준</span>
+        <span class="donut-center-value" id="centerValue">75.3%</span>
+        <span class="donut-center-sub" id="centerSub">모바일</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="device-cards" id="deviceCards"></div>
+</div>
+
+
+
+<footer class="footer">
+  <span>Source: Google Analytics · kofahomepage KMDb</span>
+  <span>Period: 2025.01.01 – 2026.03.31 · 455 days</span>
+</footer>
+
+<script>
+const metrics = {
+  session: {
+    label: '세션 기준',
+    mobile: 75.3, desktop: 23.3, other: 1.4,
+    mobileAbs: '5,509,561', desktopAbs: '1,700,906', otherAbs: '103,144',
+  },
+  user: {
+    label: '사용자 기준',
+    mobile: 77.8, desktop: 20.6, other: 1.6,
+    mobileAbs: '4,151,700', desktopAbs: '1,098,001', otherAbs: '83,591',
+  },
+  view: {
+    label: '조회 기준',
+    mobile: 62.1, desktop: 36.1, other: 1.8,
+    mobileAbs: '11,155,940', desktopAbs: '6,489,395', otherAbs: '317,945',
+  }
+};
+
+let currentMetric = 'session';
+let chart;
+
+function buildCards(m) {
+  const d = metrics[m];
+  document.getElementById('deviceCards').innerHTML = `
+    <div class="device-card mobile">
+      <div class="device-card-top">
+        <span class="device-name">모바일</span>
+        <span class="device-pct mobile">${d.mobile}%</span>
+      </div>
+      <div class="device-metrics">
+        <div class="device-metric-item">
+          <p class="device-metric-label">세션</p>
+          <p class="device-metric-value">${metrics.session.mobileAbs}</p>
+        </div>
+        <div class="device-metric-item">
+          <p class="device-metric-label">사용자</p>
+          <p class="device-metric-value">${metrics.user.mobileAbs}</p>
+        </div>
+        <div class="device-metric-item">
+          <p class="device-metric-label">조회수</p>
+          <p class="device-metric-value">${metrics.view.mobileAbs}</p>
+        </div>
+      </div>
+    </div>
+    <div class="device-card desktop">
+      <div class="device-card-top">
+        <span class="device-name">웹 (데스크탑)</span>
+        <span class="device-pct desktop">${d.desktop}%</span>
+      </div>
+      <div class="device-metrics">
+        <div class="device-metric-item">
+          <p class="device-metric-label">세션</p>
+          <p class="device-metric-value">${metrics.session.desktopAbs}</p>
+        </div>
+        <div class="device-metric-item">
+          <p class="device-metric-label">사용자</p>
+          <p class="device-metric-value">${metrics.user.desktopAbs}</p>
+        </div>
+        <div class="device-metric-item">
+          <p class="device-metric-label">조회수</p>
+          <p class="device-metric-value">${metrics.view.desktopAbs}</p>
+        </div>
+      </div>
+    </div>
+    <div class="device-card other">
+      <div class="device-card-top">
+        <span class="device-name">기타</span>
+        <span class="device-pct other">${d.other}%</span>
+      </div>
+      <div class="device-metrics">
+        <div class="device-metric-item">
+          <p class="device-metric-label">세션</p>
+          <p class="device-metric-value">${metrics.session.otherAbs}</p>
+        </div>
+        <div class="device-metric-item">
+          <p class="device-metric-label">사용자</p>
+          <p class="device-metric-value">${metrics.user.otherAbs}</p>
+        </div>
+        <div class="device-metric-item">
+          <p class="device-metric-label">조회수</p>
+          <p class="device-metric-value">${metrics.view.otherAbs}</p>
+        </div>
+      </div>
+    </div>`;
+}
+
+
+
+function updateChart(m) {
+  const d = metrics[m];
+  chart.data.datasets[0].data = [d.mobile, d.desktop, d.other];
+  chart.update('active');
+  document.getElementById('centerLabel').textContent = d.label;
+  document.getElementById('centerValue').textContent = d.mobile + '%';
+}
+
+function switchMetric(m, btn) {
+  currentMetric = m;
+  document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateChart(m);
+  buildCards(m);
+}
+
+// Init donut
+chart = new Chart(document.getElementById('donutChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['모바일', '웹 (데스크탑)', '기타'],
+    datasets: [{
+      data: [75.3, 23.3, 1.4],
+      backgroundColor: ['#DC4A1E', '#2563EB', '#78716C'],
+      borderWidth: 3,
+      borderColor: '#FAFAF9',
+      hoverOffset: 6,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '72%',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#111827',
+        titleColor: '#F9FAFB',
+        bodyColor: '#D1D5DB',
+        padding: 10,
+        titleFont: { family: "'Noto Sans KR', sans-serif", size: 12 },
+        bodyFont: { family: "'DM Mono', monospace", size: 11 },
+        callbacks: {
+          label: item => `  ${item.parsed.toFixed(1)}%`
+        }
+      }
+    }
+  }
+});
+
+buildCards('session');
+</script>
+</body>
+</html>
