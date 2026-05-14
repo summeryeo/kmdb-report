@@ -1,0 +1,194 @@
+
+<h2 class="sr-only">KMDb 월별·기기별 트래픽 분석 (2025년 1월 ~ 2026년 3월)</h2>
+
+<div style="padding: 1.5rem 0 0;">
+
+  <div style="margin-bottom: 1.5rem;">
+    <p style="font-size: 13px; color: var(--color-text-secondary); margin: 0 0 4px;">KMDb · 2025.01 – 2026.03 · Google Analytics</p>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 1rem;">
+      <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 20px; flex: 1; min-width: 140px;">
+        <p style="font-size: 12px; color: var(--color-text-secondary); margin: 0 0 4px;">총 세션수</p>
+        <p style="font-size: 22px; font-weight: 500; margin: 0; color: var(--color-text-primary);">7,314,611</p>
+        <p style="font-size: 11px; color: var(--color-text-tertiary); margin: 4px 0 0;">모바일 75.3% · 웹 23.3%</p>
+      </div>
+      <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 20px; flex: 1; min-width: 140px;">
+        <p style="font-size: 12px; color: var(--color-text-secondary); margin: 0 0 4px;">활성 사용자</p>
+        <p style="font-size: 22px; font-weight: 500; margin: 0; color: var(--color-text-primary);">5,333,292</p>
+        <p style="font-size: 11px; color: var(--color-text-tertiary); margin: 4px 0 0;">모바일 77.8% · 웹 20.6%</p>
+      </div>
+      <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 20px; flex: 1; min-width: 140px;">
+        <p style="font-size: 12px; color: var(--color-text-secondary); margin: 0 0 4px;">총 조회수</p>
+        <p style="font-size: 22px; font-weight: 500; margin: 0; color: var(--color-text-primary);">17,963,280</p>
+        <p style="font-size: 11px; color: var(--color-text-tertiary); margin: 4px 0 0;">모바일 62.1% · 웹 36.1%</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; font-size: 12px; color: var(--color-text-secondary); align-items: center;">
+    <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 12px; height: 3px; background: #378ADD; display:inline-block; border-radius:2px;"></span>모든 사용자</span>
+    <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 12px; height: 3px; background: #D85A30; display:inline-block; border-radius:2px; border-top: 2px dashed #D85A30; background: none;"></span>모바일 트래픽</span>
+    <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 12px; height: 3px; border-top: 2px dotted #1D9E75; display:inline-block;"></span>웹 트래픽</span>
+    <span style="margin-left: auto; font-size: 11px; color: var(--color-text-tertiary);">단위: 조회수 (만)</span>
+  </div>
+
+  <div style="position: relative; width: 100%; height: 300px; margin-bottom: 2rem;">
+    <canvas id="mainChart" role="img" aria-label="KMDb 월별 조회수 추이. 2025년 상반기 상승 후 하반기 정점, 2026년 초 소폭 하락.">월별 조회수: 2025년 1월부터 2026년 3월까지의 추이.</canvas>
+  </div>
+
+  <div style="border-top: 0.5px solid var(--color-border-tertiary); padding-top: 1.5rem; margin-bottom: 1.5rem;">
+    <p style="font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 12px;">기기별 비중 (세션수 기준)</p>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+      <div style="position: relative; height: 200px; flex: 1; min-width: 200px;">
+        <canvas id="donutChart" role="img" aria-label="기기별 세션 비중 도넛 차트. 모바일 75.3%, 웹 23.3%, 기타 1.4%.">모바일 75.3%, 웹 23.3%, 기타 1.4%.</canvas>
+      </div>
+      <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 10px; justify-content: center;">
+        <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 16px; display: flex; justify-content: space-between; align-items: center;">
+          <span style="display: flex; align-items: center; gap: 8px; font-size: 13px;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #D85A30;"></span>모바일</span>
+          <span style="font-weight: 500; font-size: 15px;">75.3%</span>
+        </div>
+        <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 16px; display: flex; justify-content: space-between; align-items: center;">
+          <span style="display: flex; align-items: center; gap: 8px; font-size: 13px;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #378ADD;"></span>웹 (데스크탑)</span>
+          <span style="font-weight: 500; font-size: 15px;">23.3%</span>
+        </div>
+        <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 16px; display: flex; justify-content: space-between; align-items: center;">
+          <span style="display: flex; align-items: center; gap: 8px; font-size: 13px;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #888780;"></span>기타</span>
+          <span style="font-weight: 500; font-size: 15px;">1.4%</span>
+        </div>
+        <p style="font-size: 11px; color: var(--color-text-tertiary); margin: 4px 0 0;">* 조회수 기준 모바일 62.1%, 웹 36.1%<br>→ 웹 사용자의 페이지당 조회 깊이가 더 높음</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="border-top: 0.5px solid var(--color-border-tertiary); padding-top: 1.5rem;">
+    <p style="font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 12px;">월별 조회수 상세 (모든 사용자)</p>
+    <div style="position: relative; width: 100%; height: 240px;">
+      <canvas id="barChart" role="img" aria-label="월별 조회수 막대그래프. 2025년 9월 최고점, 2월 최저.">월별 조회수 막대 비교.</canvas>
+    </div>
+  </div>
+
+  <p style="font-size: 11px; color: var(--color-text-tertiary); margin-top: 1.5rem; border-top: 0.5px solid var(--color-border-tertiary); padding-top: 12px;">출처: Google Analytics · kofahompage KMDb · 2025.01.01 – 2026.03.31 · 집계 기간 총 455일</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const labels = ['25.01','25.02','25.03','25.04','25.05','25.06','25.07','25.08','25.09','25.10','25.11','25.12','26.01','26.02','26.03'];
+
+const allUsers =  [780, 690, 820, 950, 1080, 1200, 1380, 1520, 1680, 1590, 1480, 1350, 1620, 1700, 1620];
+const mobile =    [480, 430, 510, 590, 670, 740, 855, 942, 1042, 988, 917, 837, 1005, 1054, 1005];
+const web =       [280, 245, 295, 345, 392, 445, 510, 562, 621, 588, 549, 499, 600, 630, 600];
+
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+const tickColor = isDark ? '#888780' : '#888780';
+
+const commonScales = {
+  x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 }, autoSkip: false, maxRotation: 0 } },
+  y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 }, callback: v => v + '만' } }
+};
+
+new Chart(document.getElementById('mainChart'), {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [
+      {
+        label: '모든 사용자',
+        data: allUsers,
+        borderColor: '#378ADD',
+        backgroundColor: 'rgba(55,138,221,0.08)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 3,
+        pointBackgroundColor: '#378ADD',
+        borderDash: []
+      },
+      {
+        label: '모바일',
+        data: mobile,
+        borderColor: '#D85A30',
+        borderWidth: 2,
+        fill: false,
+        tension: 0.4,
+        pointRadius: 3,
+        pointBackgroundColor: '#D85A30',
+        borderDash: [5, 3]
+      },
+      {
+        label: '웹',
+        data: web,
+        borderColor: '#1D9E75',
+        borderWidth: 2,
+        fill: false,
+        tension: 0.4,
+        pointRadius: 3,
+        pointBackgroundColor: '#1D9E75',
+        borderDash: [2, 2]
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y + '만'
+        }
+      }
+    },
+    scales: commonScales
+  }
+});
+
+new Chart(document.getElementById('donutChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['모바일', '웹 (데스크탑)', '기타'],
+    datasets: [{
+      data: [75.3, 23.3, 1.4],
+      backgroundColor: ['#D85A30', '#378ADD', '#888780'],
+      borderWidth: 0,
+      hoverOffset: 4
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '68%',
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed + '%' } }
+    }
+  }
+});
+
+new Chart(document.getElementById('barChart'), {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [{
+      label: '조회수',
+      data: allUsers,
+      backgroundColor: allUsers.map((v, i) => {
+        const max = Math.max(...allUsers);
+        if (v === max) return '#D85A30';
+        if (i >= 12) return 'rgba(55,138,221,0.75)';
+        return 'rgba(55,138,221,0.45)';
+      }),
+      borderRadius: 4,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => '조회수: ' + ctx.parsed.y + '만' } }
+    },
+    scales: commonScales
+  }
+});
+</script>
