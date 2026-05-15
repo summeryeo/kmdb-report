@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>구술 자료 폴더 구조 · 한국영상자료원</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:   #111827;
+    --ink-2: #374151;
+    --ink-3: #6B7280;
+    --ink-4: #9CA3AF;
+    --paper: #FAFAF9;
+    --rule:  #E5E7EB;
+    --blue:  #2563EB;
+    --amber: #E8A020;
+    --mono:  'DM Mono', monospace;
+    --sans:  'Noto Sans KR', sans-serif;
+  }
+
+  body {
+    font-family: var(--mono);
+    background: var(--paper);
+    color: var(--ink);
+    padding: 48px 40px 64px;
+    max-width: 840px;
+    margin: 0 auto;
+  }
+
+  /* ── 헤더 ── */
+  .header {
+    border-top: 2px solid var(--ink);
+    padding-top: 18px;
+    margin-bottom: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 7px;
+  }
+  .title {
+    font-family: var(--sans);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .subtitle {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-top: 4px;
+    font-weight: 300;
+  }
+  .date-badge {
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.06em;
+    padding-bottom: 2px;
+  }
+
+  /* ── 윈도우 프레임 ── */
+  .win {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .win-bar {
+    background: #F3F4F6;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .win-dots { display: flex; gap: 5px; }
+  .win-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--rule);
+  }
+  .win-path {
+    font-size: 11px;
+    color: var(--ink-4);
+    letter-spacing: 0.02em;
+    margin-left: 4px;
+  }
+
+  /* ── 트리 ── */
+  .tree { padding: 12px 16px 20px; }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    padding: 8px 6px 6px;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    cursor: default;
+    transition: background 0.1s;
+    min-height: 24px;
+  }
+  .row:hover { background: #F9FAFB; }
+  .row.active { background: #EFF6FF; }
+
+  .indent-1 { padding-left: 22px; }
+  .indent-2 { padding-left: 44px; }
+  .indent-3 { padding-left: 66px; }
+  .indent-4 { padding-left: 88px; }
+
+  .icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    width: 16px;
+    text-align: center;
+  }
+
+  .name {
+    font-size: 12px;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .name.year   { color: #B45309; font-weight: 500; }
+  .name.folder { color: var(--ink-2); font-weight: 500; }
+  .name.muted  { color: var(--ink-4); }
+
+  .meta {
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--ink-4);
+    padding-right: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .divider-row {
+    height: 1px;
+    background: var(--rule);
+    margin: 8px 0;
+  }
+
+  /* ── 푸터 ── */
+  .footer {
+    margin-top: 32px;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (max-width: 560px) {
+    body { padding: 28px 16px 48px; }
+    .title { font-size: 16px; }
+    .indent-3 { padding-left: 44px; }
+    .indent-4 { padding-left: 60px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div>
+    <p class="eyebrow">한국영상자료원 · 구술채록 사업</p>
+    <h1 class="title">구술 자료 폴더 구조</h1>
+    <p class="subtitle">연도 → 생애사/주제사 → 구술자 → 종류별 파일</p>
+  </div>
+  <p class="date-badge">2004 – 2019</p>
+</header>
+
+<div class="win">
+  <div class="win-bar">
+    <div class="win-dots">
+      <div class="win-dot"></div>
+      <div class="win-dot"></div>
+      <div class="win-dot"></div>
+    </div>
+    <span class="win-path">사용자 (E:) › 영상자료원 업무 › 2004~2019 구술사</span>
+  </div>
+  <div class="tree">
+
+    <p class="section-label">연도별 폴더 (2004–2019)</p>
+
+    <div class="row">
+      <i class="ti ti-folder icon" style="color:#E8A020;" aria-hidden="true"></i>
+      <span class="name year">2004 구술사</span>
+      <span class="meta">파일 폴더</span>
+    </div>
+    <div class="row">
+      <i class="ti ti-folder icon" style="color:#E8A020;" aria-hidden="true"></i>
+      <span class="name year">2005 구술사</span>
+      <span class="meta">파일 폴더</span>
+    </div>
+    <div class="row" style="opacity:0.4;">
+      <i class="ti ti-dots icon" style="color:var(--ink-4);" aria-hidden="true"></i>
+      <span class="name muted">2006 – 2016 구술사</span>
+      <span class="meta">파일 폴더 × 11</span>
+    </div>
+
+    <div class="row active">
+      <i class="ti ti-folder-open icon" style="color:#E8A020;" aria-hidden="true"></i>
+      <span class="name year">2017 구술사</span>
+      <span class="meta">파일 폴더</span>
+    </div>
+
+    <!-- 2017 하위 -->
+    <div class="row indent-1">
+      <i class="ti ti-folder icon" style="color:#C88A1A;" aria-hidden="true"></i>
+      <span class="name folder">0. 준비</span>
+      <span class="meta">파일 폴더</span>
+    </div>
+    <div class="row indent-1">
+      <i class="ti ti-folder-open icon" style="color:#C88A1A;" aria-hidden="true"></i>
+      <span class="name folder">1. 2017생애사 구술과정 산출물</span>
+      <span class="meta">파일 폴더</span>
+    </div>
+
+    <!-- 구술자: 정일성 -->
+    <div class="row indent-2">
+      <i class="ti ti-folder-open icon" style="color:#A87018;" aria-hidden="true"></i>
+      <span class="name folder">정일성</span>
+      <span class="meta">파일 폴더</span>
+    </div>
+
+    <div class="row indent-3">
+      <i class="ti ti-folder icon" style="color:#8A5A12;" aria-hidden="true"></i>
+      <span class="name">1. 준비자료</span>
+    </div>
+    <div class="row indent-3">
+      <i class="ti ti-folder-open icon" style="color:#8A5A12;" aria-hidden="true"></i>
+      <span class="name">2. 질문지</span>
+    </div>
+
+    <!-- 질문지 파일들 -->
+    <div class="row indent-4">
+      <i class="ti ti-file-text icon" style="color:#2563EB;" aria-hidden="true"></i>
+      <span class="name">2017생애사_정일성_1차_질문지(구술자용)</span>
+      <span class="meta">19KB</span>
+    </div>
+    <div class="row indent-4">
+      <i class="ti ti-file-text icon" style="color:#2563EB;" aria-hidden="true"></i>
+      <span class="name">2017생애사_정일성_2차_질문지(구술자용)</span>
+      <span class="meta">19KB</span>
+    </div>
+    <div class="row indent-4" style="opacity:0.5;">
+      <i class="ti ti-dots icon" style="color:var(--ink-4);" aria-hidden="true"></i>
+      <span class="name muted">3차 – 5차 질문지, 구술설계도</span>
+      <span class="meta">총 11개</span>
+    </div>
+
+    <div class="row indent-3">
+      <i class="ti ti-folder icon" style="color:#8A5A12;" aria-hidden="true"></i>
+      <span class="name">3. 면담보고서</span>
+    </div>
+    <div class="row indent-3">
+      <i class="ti ti-folder icon" style="color:#8A5A12;" aria-hidden="true"></i>
+      <span class="name">4. 촬영보고서</span>
+    </div>
+    <div class="row indent-3">
+      <i class="ti ti-folder-open icon" style="color:#8A5A12;" aria-hidden="true"></i>
+      <span class="name">5. 동영상</span>
+    </div>
+
+    <!-- 동영상 파일들 -->
+    <div class="row indent-4">
+      <i class="ti ti-file-filled icon" style="color:#0891B2;" aria-hidden="true"></i>
+      <span class="name">KOFA_2017_생애사_정일성_1차_20170420</span>
+    </div>
+    <div class="row indent-4">
+      <i class="ti ti-file-filled icon" style="color:#0891B2;" aria-hidden="true"></i>
+      <span class="name">KOFA_2017_생애사_정일성_2차_20170425</span>
+    </div>
+    <div class="row indent-4">
+      <i class="ti ti-file-filled icon" style="color:#0891B2;" aria-hidden="true"></i>
+      <span class="name">KOFA_2017_생애사_정일성_3차_20170502</span>
+    </div>
+    <div class="row indent-4" style="opacity:0.5;">
+      <i class="ti ti-dots icon" style="color:var(--ink-4);" aria-hidden="true"></i>
+      <span class="name muted">4차, 5차</span>
+      <span class="meta">총 5개</span>
+    </div>
+
+    <div class="row indent-3">
+      <i class="ti ti-folder icon" style="color:#8A5A12;" aria-hidden="true"></i>
+      <span class="name">6. 음성파일</span>
+    </div>
+    <div class="row indent-3">
+      <i class="ti ti-folder icon" style="color:#8A5A12;" aria-hidden="true"></i>
+      <span class="name">7. 사진</span>
+    </div>
+    <div class="row indent-3">
+      <i class="ti ti-folder icon" style="color:#8A5A12;" aria-hidden="true"></i>
+      <span class="name">8. 채록문</span>
+    </div>
+    <div class="row indent-3">
+      <i class="ti ti-folder icon" style="color:#8A5A12;" aria-hidden="true"></i>
+      <span class="name">9. 기증및동의서</span>
+    </div>
+
+    <!-- 다른 구술자 -->
+    <div class="row indent-2">
+      <i class="ti ti-folder icon" style="color:#A87018;" aria-hidden="true"></i>
+      <span class="name folder">김청기</span>
+      <span class="meta">파일 폴더</span>
+    </div>
+    <div class="row indent-2" style="opacity:0.45;">
+      <i class="ti ti-dots icon" style="color:var(--ink-4);" aria-hidden="true"></i>
+      <span class="name muted">외 구술자 — 동일 구조 반복</span>
+    </div>
+
+    <!-- 주제사 -->
+    <div class="row indent-1">
+      <i class="ti ti-folder icon" style="color:#C88A1A;" aria-hidden="true"></i>
+      <span class="name folder">2. 2017주제사 구술과정 산출물</span>
+      <span class="meta">파일 폴더</span>
+    </div>
+    <div class="row indent-1" style="opacity:0.5;">
+      <i class="ti ti-dots icon" style="color:var(--ink-4);" aria-hidden="true"></i>
+      <span class="name muted">3–13. 관련 서류 · 워크샵 · 원고 등</span>
+      <span class="meta">파일 폴더 × 11</span>
+    </div>
+
+    <div class="divider-row"></div>
+
+    <div class="row">
+      <i class="ti ti-folder icon" style="color:#E8A020;" aria-hidden="true"></i>
+      <span class="name year">2018 구술사</span>
+      <span class="meta">파일 폴더</span>
+    </div>
+    <div class="row">
+      <i class="ti ti-folder icon" style="color:#E8A020;" aria-hidden="true"></i>
+      <span class="name year">2019_구술사</span>
+      <span class="meta">파일 폴더</span>
+    </div>
+
+  </div>
+</div>
+
+<footer class="footer">
+  <span>한국영상자료원 · 영화인 구술채록 사업</span>
+  <span>2004 – 2019 · 구술 자료 아카이브</span>
+</footer>
+
+</body>
+</html>
