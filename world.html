@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>전쟁 중인 세계 — 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: #0d1520;
+  font-family: 'Pretendard', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-bar {
+  background: #0a0f18;
+  border-bottom: 1px solid rgba(192,57,43,0.3);
+  padding: 10px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.top-label { font-size: 11px; color: #c0392b; letter-spacing: 0.28em; font-weight: 600; }
+.top-date  { font-size: 10px; color: #2a4060; letter-spacing: 0.12em; }
+
+.main-header { padding: 24px 32px 8px; }
+.hed {
+  font-size: 34px; font-weight: 800;
+  color: #c8dce8;
+  line-height: 1.0; letter-spacing: -0.02em;
+  border-left: 3px solid #c0392b; padding-left: 14px;
+}
+.hed-sub {
+  font-size: 10px; color: #2a4060; letter-spacing: 0.18em;
+  margin-top: 7px; padding-left: 17px;
+}
+
+.globe-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 20px 8px;
+}
+#globe-container {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 1;
+}
+#globe-canvas {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+#globe-canvas:active { cursor: grabbing; }
+
+.drag-hint {
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: #1e3048;
+  letter-spacing: 0.18em;
+  white-space: nowrap;
+}
+
+.footer {
+  padding: 12px 32px;
+  background: #080d14;
+  border-top: 1px solid #0f1e2e;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 34px;
+}
+.legend { display: flex; gap: 22px; align-items: center; }
+.legend-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 10px; color: #2e4a62;
+  white-space: nowrap;
+}
+.legend-crosshair {
+  width: 16px; height: 16px; position: relative; flex-shrink: 0;
+}
+.legend-crosshair::before,
+.legend-crosshair::after {
+  content: '';
+  position: absolute;
+  background: #c0392b;
+  opacity: 0.85;
+}
+.legend-crosshair::before { width: 100%; height: 1px; top: 50%; left: 0; transform: translateY(-50%); }
+.legend-crosshair::after  { width: 1px; height: 100%; left: 50%; top: 0; transform: translateX(-50%); }
+.legend-crosshair-dot {
+  position: absolute;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #c0392b;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 4px rgba(192,57,43,0.8);
+}
+.legend-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #c0392b; opacity: 0.55;
+  flex-shrink: 0;
+}
+.src { font-size: 9px; color: #1a2e3e; letter-spacing: 0.1em; }
+
+/* 펄스 애니메이션 */
+@keyframes pulse-ring {
+  0%   { r: 6;  opacity: 0.5; }
+  100% { r: 20; opacity: 0;   }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1;  }
+  50%       { opacity: 0.2; }
+}
+.pulse-1 { animation: pulse-ring 2.2s ease-out infinite; }
+.pulse-2 { animation: pulse-ring 2.2s ease-out infinite 0.75s; }
+.blink   { animation: blink 1.5s ease-in-out infinite; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-label">// 진행 중인 무력 분쟁 — 2025</div>
+  <div class="top-date">ACLED · UCDP 데이터 기반</div>
+</div>
+
+<div class="main-header">
+  <div class="hed">전쟁 중인 세계</div>
+  <div class="hed-sub">ONGOING ARMED CONFLICTS WORLDWIDE</div>
+</div>
+
+<div class="globe-section">
+  <div id="globe-container">
+    <svg id="globe-canvas"></svg>
+    <div class="drag-hint">← 드래그로 회전 →</div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-crosshair">
+        <div class="legend-crosshair-dot"></div>
+      </div>
+      주요 분쟁
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot"></div>
+      진행 중 분쟁
+    </div>
+  </div>
+  <div class="src">출처: ACLED / UCDP 2025</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script>
+const majorConflicts = [
+  { name: "우크라이나", lat: 49,   lon: 32   },
+  { name: "가자",       lat: 31.5, lon: 34.5 },
+  { name: "수단",       lat: 15,   lon: 30   },
+  { name: "미얀마",     lat: 20,   lon: 96   },
+];
+
+const activeConflicts = [
+  { lat: 35,   lon: 38   }, { lat: 15,   lon: 48   },
+  { lat: 33,   lon: 65   }, { lat: 9,    lon: 40   },
+  { lat: 6,    lon: 46   }, { lat: -2,   lon: 24   },
+  { lat: 9,    lon: 8    }, { lat: 17,   lon: -2   },
+  { lat: 12,   lon: -2   }, { lat: 14,   lon: 8    },
+  { lat: 12,   lon: 17   }, { lat: 7,    lon: 20   },
+  { lat: 5,    lon: 12   }, { lat: 7,    lon: 31   },
+  { lat: -15,  lon: 35   }, { lat: 27,   lon: 17   },
+  { lat: 33,   lon: 44   }, { lat: 33.9, lon: 35.5 },
+  { lat: 30,   lon: 70   }, { lat: 33,   lon: 75   },
+  { lat: 25,   lon: 93   }, { lat: 7,    lon: 124  },
+  { lat: 23,   lon: -102 }, { lat: 4,    lon: -74  },
+  { lat: 8,    lon: -66  }, { lat: 19,   lon: -72.5},
+  { lat: -2,   lon: -78  },
+];
+
+const svg = d3.select("#globe-canvas");
+const container = document.getElementById("globe-container");
+let width, height, radius;
+
+function getSize() {
+  const r = container.getBoundingClientRect();
+  width = height = r.width || 600;
+  radius = width * 0.455;
+}
+getSize();
+
+svg.attr("viewBox", `0 0 ${width} ${height}`)
+   .attr("width", width).attr("height", height);
+
+const projection = d3.geoOrthographic()
+  .scale(radius)
+  .translate([width/2, height/2])
+  .clipAngle(90)
+  .rotate([20, -25, 0]);
+
+const geoPath = d3.geoPath().projection(projection);
+const defs = svg.append("defs");
+
+// ── 바다: 다크 네이비 그라데이션 ──
+const oceanGrad = defs.append("radialGradient")
+  .attr("id", "oceanGrad")
+  .attr("cx", "38%").attr("cy", "32%").attr("r", "68%");
+oceanGrad.append("stop").attr("offset", "0%")  .attr("stop-color", "#1e3a5a");
+oceanGrad.append("stop").attr("offset", "55%") .attr("stop-color", "#0e2038");
+oceanGrad.append("stop").attr("offset", "100%").attr("stop-color", "#080f1e");
+
+// ── 광원 하이라이트 ──
+const shineGrad = defs.append("radialGradient")
+  .attr("id", "shineGrad")
+  .attr("cx", "33%").attr("cy", "28%").attr("r", "52%");
+shineGrad.append("stop").attr("offset", "0%") .attr("stop-color", "#4080b0").attr("stop-opacity", "0.2");
+shineGrad.append("stop").attr("offset", "55%").attr("stop-color", "#4080b0").attr("stop-opacity", "0.04");
+shineGrad.append("stop").attr("offset", "100%").attr("stop-color", "#4080b0").attr("stop-opacity", "0");
+
+// ── 대기권 글로우 ──
+const atmoGrad = defs.append("radialGradient")
+  .attr("id", "atmoGrad")
+  .attr("cx", "50%").attr("cy", "50%").attr("r", "50%");
+atmoGrad.append("stop").attr("offset", "83%") .attr("stop-color", "#0e2038").attr("stop-opacity", "0");
+atmoGrad.append("stop").attr("offset", "94%") .attr("stop-color", "#2060a0").attr("stop-opacity", "0.3");
+atmoGrad.append("stop").attr("offset", "100%").attr("stop-color", "#4090d0").attr("stop-opacity", "0.55");
+
+// ── 마커 글로우 필터 ──
+const glowF = defs.append("filter").attr("id", "glowF").attr("x", "-50%").attr("y", "-50%").attr("width", "200%").attr("height", "200%");
+glowF.append("feGaussianBlur").attr("stdDeviation", "4").attr("result", "blur");
+const mg = glowF.append("feMerge");
+mg.append("feMergeNode").attr("in", "blur");
+mg.append("feMergeNode").attr("in", "SourceGraphic");
+
+// ── 클립 ──
+defs.append("clipPath").attr("id", "clip")
+  .append("circle").attr("cx", width/2).attr("cy", height/2).attr("r", radius);
+
+// ── 구 배경 ──
+svg.append("circle")
+  .attr("cx", width/2).attr("cy", height/2).attr("r", radius)
+  .attr("fill", "url(#oceanGrad)");
+
+// ── 경위선 ──
+const gratPath = svg.append("path")
+  .datum(d3.geoGraticule()())
+  .attr("fill", "none")
+  .attr("stroke", "rgba(40,80,130,0.45)")
+  .attr("stroke-width", 0.4)
+  .attr("clip-path", "url(#clip)");
+
+// ── 대륙 ──
+const landG   = svg.append("g").attr("clip-path", "url(#clip)");
+const markerG = svg.append("g").attr("clip-path", "url(#clip)");
+
+// ── 광원 오버레이 ──
+svg.append("circle")
+  .attr("cx", width/2).attr("cy", height/2).attr("r", radius)
+  .attr("fill", "url(#shineGrad)")
+  .style("pointer-events", "none");
+
+// ── 대기권 ──
+svg.append("circle")
+  .attr("cx", width/2).attr("cy", height/2).attr("r", radius * 1.035)
+  .attr("fill", "url(#atmoGrad)")
+  .style("pointer-events", "none");
+
+// ── 구 테두리 ──
+svg.append("circle")
+  .attr("cx", width/2).attr("cy", height/2).attr("r", radius)
+  .attr("fill", "none")
+  .attr("stroke", "rgba(30,70,120,0.5)")
+  .attr("stroke-width", 1);
+
+// ── 대륙 색상 ──
+function landFill(id) {
+  const n = parseInt(id);
+  const africa = [12,24,32,50,72,108,120,132,140,148,174,180,204,218,226,231,232,238,266,270,288,324,384,404,426,430,434,450,454,466,478,508,516,562,566,624,638,646,678,686,694,706,710,716,728,736,748,768,788,800,818,834,854,894];
+  const europe = [8,20,40,56,70,100,112,191,196,203,208,233,246,250,276,292,300,348,352,372,380,428,440,442,470,492,498,528,578,616,620,642,643,688,703,705,724,752,756,804,826];
+  const namerica = [124,188,214,222,320,332,340,388,484,558,591,630];
+  const samerica = [32,68,76,152,170,218,328,600,604,740,858,862];
+  const oceania  = [36,242,548,598,882,90,776];
+  if (africa.includes(n))   return "#1e3428";
+  if (europe.includes(n))   return "#1a2e38";
+  if (namerica.includes(n)) return "#1c3030";
+  if (samerica.includes(n)) return "#1a3228";
+  if (oceania.includes(n))  return "#1c3030";
+  return "#1a2e34"; // 아시아 포함 기타
+}
+
+function landStroke(id) {
+  const n = parseInt(id);
+  return "#2a4840";
+}
+
+// ── 세계 지도 로드 ──
+fetch("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json")
+  .then(r => r.json())
+  .then(world => {
+    const countries = topojson.feature(world, world.objects.countries);
+    const borders   = topojson.mesh(world, world.objects.countries, (a,b) => a !== b);
+
+    landG.selectAll(".land")
+      .data(countries.features)
+      .join("path")
+      .attr("class", "land")
+      .attr("d", geoPath)
+      .attr("fill", d => landFill(d.id))
+      .attr("stroke", d => landStroke(d.id))
+      .attr("stroke-width", 0.4);
+
+    landG.append("path")
+      .datum(borders)
+      .attr("class", "borders")
+      .attr("fill", "none")
+      .attr("stroke", "rgba(40,80,70,0.5)")
+      .attr("stroke-width", 0.3)
+      .attr("d", geoPath);
+
+    drawMarkers();
+    startRotate();
+  });
+
+function isVisible(lon, lat) {
+  const rot = projection.rotate();
+  return d3.geoDistance([lon, lat], [-rot[0], -rot[1]]) < Math.PI / 2;
+}
+
+function drawMarkers() {
+  markerG.selectAll("*").remove();
+
+  // 진행 중 분쟁
+  activeConflicts.forEach(d => {
+    if (!isVisible(d.lon, d.lat)) return;
+    const c = projection([d.lon, d.lat]);
+    if (!c) return;
+    markerG.append("circle").attr("cx",c[0]).attr("cy",c[1]).attr("r",3.5)
+      .attr("fill","#c0392b").attr("opacity",0.65);
+    markerG.append("circle").attr("cx",c[0]).attr("cy",c[1]).attr("r",1.5)
+      .attr("fill","#e05545");
+  });
+
+  // 주요 분쟁
+  majorConflicts.forEach(d => {
+    if (!isVisible(d.lon, d.lat)) return;
+    const c = projection([d.lon, d.lat]);
+    if (!c) return;
+    const [cx, cy] = c;
+    const g = markerG.append("g");
+
+    // 펄스 링 (SVG animate)
+    [0, 750].forEach(delay => {
+      const ring = g.append("circle")
+        .attr("cx", cx).attr("cy", cy).attr("r", 5)
+        .attr("fill", "#c0392b").attr("opacity", 0.4)
+        .attr("stroke", "none");
+      ring.append("animate")
+        .attr("attributeName", "r")
+        .attr("values", "5;20")
+        .attr("dur", "2.2s")
+        .attr("begin", `${delay}ms`)
+        .attr("repeatCount", "indefinite");
+      ring.append("animate")
+        .attr("attributeName", "opacity")
+        .attr("values", "0.4;0")
+        .attr("dur", "2.2s")
+        .attr("begin", `${delay}ms`)
+        .attr("repeatCount", "indefinite");
+    });
+
+    // 외부 링 2개
+    g.append("circle").attr("cx",cx).attr("cy",cy).attr("r",12)
+      .attr("fill","none").attr("stroke","#c0392b").attr("stroke-width",0.6).attr("opacity",0.2);
+    g.append("circle").attr("cx",cx).attr("cy",cy).attr("r",7)
+      .attr("fill","none").attr("stroke","#c0392b").attr("stroke-width",0.5).attr("opacity",0.35);
+
+    // 크로스헤어
+    const gap=4, len=7;
+    [[-1,0],[1,0],[0,-1],[0,1]].forEach(([dx,dy]) => {
+      g.append("line")
+        .attr("x1", cx+dx*gap).attr("y1", cy+dy*gap)
+        .attr("x2", cx+dx*(gap+len)).attr("y2", cy+dy*(gap+len))
+        .attr("stroke","#ff5030").attr("stroke-width",1.3).attr("opacity",0.9);
+    });
+
+    // 중심점 (블링크)
+    const dot = g.append("circle").attr("cx",cx).attr("cy",cy).attr("r",4.5)
+      .attr("fill","#c0392b").attr("opacity",0.95).attr("filter","url(#glowF)");
+    dot.append("animate")
+      .attr("attributeName","opacity")
+      .attr("values","0.95;0.2;0.95")
+      .attr("dur","1.5s").attr("repeatCount","indefinite");
+    g.append("circle").attr("cx",cx).attr("cy",cy).attr("r",2)
+      .attr("fill","#ff7060");
+
+    // 라벨
+    const tw = d.name.length * 8.5 + 20;
+    const lx = cx - tw/2, ly = cy - 30;
+    g.append("rect")
+      .attr("x",lx).attr("y",ly).attr("width",tw).attr("height",16).attr("rx",2)
+      .attr("fill","#c0392b").attr("opacity",0.92);
+    g.append("text")
+      .attr("x",cx).attr("y",ly+11)
+      .attr("text-anchor","middle")
+      .attr("font-family","'Pretendard',sans-serif")
+      .attr("font-size","9").attr("font-weight","600").attr("fill","white")
+      .text(d.name);
+  });
+}
+
+let autoRotate = true;
+
+function startRotate() {
+  d3.timer(() => {
+    if (!autoRotate) return;
+    const rot = projection.rotate();
+    projection.rotate([rot[0]+0.1, rot[1], rot[2]]);
+    updateAll();
+  });
+}
+
+function updateAll() {
+  gratPath.attr("d", geoPath);
+  landG.selectAll("path").attr("d", geoPath);
+  drawMarkers();
+}
+
+let ds = null, rs = null;
+svg.call(d3.drag()
+  .on("start", e => { autoRotate=false; ds=[e.x,e.y]; rs=projection.rotate(); })
+  .on("drag",  e => {
+    if (!ds) return;
+    projection.rotate([rs[0]+(e.x-ds[0])*0.3, rs[1]-(e.y-ds[1])*0.3, rs[2]]);
+    updateAll();
+  })
+  .on("end", () => { setTimeout(()=>{ autoRotate=true; }, 2500); })
+);
+
+window.addEventListener("resize", () => {
+  getSize();
+  svg.attr("viewBox",`0 0 ${width} ${height}`).attr("width",width).attr("height",height);
+  projection.scale(radius).translate([width/2,height/2]);
+  svg.select("#clip circle").attr("cx",width/2).attr("cy",height/2).attr("r",radius);
+  updateAll();
+});
+</script>
+</body>
+</html>
